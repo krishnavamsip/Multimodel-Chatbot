@@ -520,30 +520,28 @@ userInput.addEventListener('input', function() {
     this.style.height = (this.scrollHeight < 200 ? this.scrollHeight : 200) + 'px';
 });
 
-// --- UNIVERSAL SIDEBAR LOGIC ---
+// --- RAGNAR SIDEBAR LOGIC ---
 const sidebarToggle = document.getElementById('sidebar-toggle');
-const sidebar = document.querySelector('.sidebar');
+const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 
 if (sidebarToggle && sidebar && sidebarOverlay) {
-    // Toggle sidebar
     sidebarToggle.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
-            sidebar.classList.add('open');
-            sidebarOverlay.classList.add('active');
+            // Mobile: Slide in and out
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
         } else {
-            // Desktop toggle
+            // Desktop: Shrink to icons
             sidebar.classList.toggle('collapsed');
         }
     });
 
-    // Close sidebar on mobile overlay click
     sidebarOverlay.addEventListener('click', () => {
         sidebar.classList.remove('open');
         sidebarOverlay.classList.remove('active');
     });
 
-    // Auto-close sidebar on mobile when picking a chat
     document.querySelector('.sidebar').addEventListener('click', (e) => {
         if (window.innerWidth <= 768 && (e.target.closest('.history-item') || e.target.closest('.new-chat-btn'))) {
             sidebar.classList.remove('open');

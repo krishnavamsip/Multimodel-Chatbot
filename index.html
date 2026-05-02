@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ragnar AI</title>
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
@@ -16,31 +15,25 @@
         <!-- Dark overlay for mobile menu -->
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-        <!-- Sidebar -->
+        <!-- Collapsible Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <!-- Hamburger Menu Button -->
-                <button id="sidebar-toggle" class="sidebar-toggle">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
+            <div class="sidebar-top">
+                <button id="sidebar-toggle" class="icon-btn" title="Toggle Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <button id="new-chat-btn" class="icon-btn new-chat-btn" title="New Chat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <span class="sidebar-text">New chat</span>
                 </button>
             </div>
             
-            <button id="new-chat-btn" class="new-chat-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                <span class="sidebar-text">New chat</span>
-            </button>
-            
             <div class="history-section">
-                <p class="history-title">Recent</p>
+                <p class="history-title sidebar-text">Recent</p>
                 <div id="history-list" class="history-list"></div>
             </div>
         </aside>
 
-        <!-- Main Chat Area -->
+        <!-- Main Content -->
         <main class="main-content">
             <header class="top-bar">
                 <div class="header-left">
@@ -55,7 +48,7 @@
                     </div>
                 </div>
                 
-                <!-- Hover Area for Tokens & Cost -->
+                <!-- Hover Area for Tokens -->
                 <div class="token-stats" id="token-hover-area">
                     Tokens: <span id="session-tokens">0</span>
                     <div class="token-tooltip">
@@ -64,7 +57,7 @@
                         <div class="tooltip-row tooltip-total"><span>Cost:</span> <span id="session-cost">$0.00000</span></div>
                         <button id="tokenizer-btn" class="tokenizer-tool-link">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                            View Prompt Tokens
+                            View Tokens
                         </button>
                     </div>
                 </div>
@@ -78,8 +71,8 @@
                 </div>
             </div>
 
-            <!-- Input Area -->
-            <div class="input-container">
+            <!-- Input Area with Mobile Wrapper -->
+            <div class="input-area-wrapper">
                 <div id="timer-container" class="timer-container">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     <span id="timer-text">00:00</span>
@@ -93,7 +86,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="footer-text">AI may display inaccurate info, including about people, so double-check its responses.</div>
+                <div class="footer-note">Ragnar may display inaccurate info, including about people, so double-check its responses.</div>
             </div>
         </main>
     </div>
@@ -105,7 +98,7 @@
                 <h2>Token Breakdown</h2>
                 <button id="close-modal-btn" class="close-btn">&times;</button>
             </div>
-            <p class="modal-subtitle">Showing approximate BPE tokenization for your latest prompt.</p>
+            <p class="modal-subtitle">Showing approximate BPE tokenization.</p>
             <div id="token-visualizer-box" class="token-visualizer-box"></div>
             <div class="token-stats-footer">
                 Total tokens: <strong id="modal-token-count">0</strong>
