@@ -1,4 +1,6 @@
-const API_URL = 'http://127.0.0.1:5000/api/chat';
+// GitHub Actions will replace this placeholder with your actual key during deployment
+const API_KEY = 'INJECT_API_KEY_HERE';
+const API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
 
 const MODEL_PRICING = {
     "minimaxai/minimax-m2.7": { input: 1.00, output: 1.00 },
@@ -264,10 +266,21 @@ async function processPrompt(message) {
 
     try {
         const currentModel = modelSelect.value;
+        
+        // --- NEW SECURE DIRECT FETCH ---
         const response = await fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: currentModel, messages: session.history }),
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`,
+                'Accept': 'text/event-stream'
+            },
+            body: JSON.stringify({ 
+                model: currentModel, 
+                messages: session.history,
+                stream: true,
+                stream_options: {"include_usage": true}
+            }),
             signal: signal
         });
 
@@ -437,15 +450,12 @@ function updateTokenDisplay() {
 
 // --- TOKENIZER VISUALIZATION LOGIC ---
 
-// Heuristic approximation of BPE Tokenization
 function approximateTokens(text) {
-    // 1. Split by words, keeping whitespace attached to the start of words
     const regex = / ?[A-Za-z]+| ?[0-9]+| ?[^A-Za-z0-9\s]+|\s+(?!\S)|\s+/g;
     const matches = text.match(regex) || [];
     let tokens = [];
     
     matches.forEach(match => {
-        // 2. Break long words into smaller chunks to simulate subword tokens
         if (match.length > 5 && !/\s+/.test(match)) {
             for (let i = 0; i < match.length; i += 4) {
                 tokens.push(match.substring(i, i + 4));
@@ -466,18 +476,15 @@ function openTokenizerModal() {
         return;
     }
 
-    // Find the last user message
     const userMessages = session.history.filter(msg => msg.role === 'user');
     const lastPrompt = userMessages[userMessages.length - 1].content;
 
-    // Apply token approximation
     const tokens = approximateTokens(lastPrompt);
     
     visualizerBox.innerHTML = '';
     tokens.forEach((token, index) => {
         const span = document.createElement('span');
         span.textContent = token;
-        // Cycle through the 5 CSS colors
         span.className = `token-chunk token-color-${index % 5}`;
         visualizerBox.appendChild(span);
     });
@@ -486,7 +493,6 @@ function openTokenizerModal() {
     tokenizerModal.style.display = 'flex';
 }
 
-// Modal Event Listeners
 tokenizerBtn.addEventListener('click', openTokenizerModal);
 closeModalBtn.addEventListener('click', () => tokenizerModal.style.display = 'none');
 window.addEventListener('click', (e) => {
