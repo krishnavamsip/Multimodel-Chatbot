@@ -1,6 +1,4 @@
-// GitHub Actions will replace this placeholder with your actual key during deployment
-const API_KEY = 'INJECT_API_KEY_HERE';
-const API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
+const API_URL = 'https://my-chat-backend-np0r.onrender.com/api/chat';
 
 const MODEL_PRICING = {
     "minimaxai/minimax-m2.7": { input: 1.00, output: 1.00 },
@@ -267,20 +265,11 @@ async function processPrompt(message) {
     try {
         const currentModel = modelSelect.value;
         
-        // --- NEW SECURE DIRECT FETCH ---
+        // --- SECURE BACKEND FETCH ---
         const response = await fetch(API_URL, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`,
-                'Accept': 'text/event-stream'
-            },
-            body: JSON.stringify({ 
-                model: currentModel, 
-                messages: session.history,
-                stream: true,
-                stream_options: {"include_usage": true}
-            }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: currentModel, messages: session.history }),
             signal: signal
         });
 
