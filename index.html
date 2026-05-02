@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini-Style AI Chat</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <button id="new-chat-btn" class="new-chat-btn">
+                <span>+</span> New chat
+            </button>
+            <div class="history-section">
+                <p class="history-title">Recent</p>
+                <div id="history-list" class="history-list"></div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="model-selector-wrapper">
+                    <select id="model-select">
+                        <option value="nvidia/nemotron-3-super-120b-a12b" selected>Nemotron 3 Super 120B</option>
+                        <option value="minimaxai/minimax-m2.7">Minimax M2.7</option>
+                        <option value="qwen/qwen3.5-397b-a17b">Qwen 3.5 397B</option>
+                        <option value="meta/llama3-8b-instruct">Llama 3 8B Instruct</option>
+                    </select>
+                </div>
+                
+                <!-- Hover Area for Tokens & Cost -->
+                <div class="token-stats" id="token-hover-area">
+                    Tokens: <span id="session-tokens">0</span>
+                    <div class="token-tooltip">
+                        <div class="tooltip-row"><span>Input:</span> <span id="input-tokens">0</span></div>
+                        <div class="tooltip-row"><span>Output:</span> <span id="output-tokens">0</span></div>
+                        <div class="tooltip-row tooltip-total"><span>Cost:</span> <span id="session-cost">$0.00000</span></div>
+                        
+                        <!-- Internal Tokenizer Button -->
+                        <button id="tokenizer-btn" class="tokenizer-tool-link">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                            View Prompt Tokens
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div id="chat-container" class="chat-container">
+                <div id="chat-messages" class="chat-messages">
+                    <div class="welcome-screen" id="welcome-screen">
+                        <h1>Hello, how can I help you today?</h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-container">
+                <div class="input-box">
+                    <textarea id="user-input" placeholder="Enter a prompt here" rows="1"></textarea>
+                    <button id="send-btn" class="send-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="footer-text">AI may display inaccurate info, including about people, so double-check its responses.</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- NEW: Tokenizer Modal -->
+    <div id="tokenizer-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Token Breakdown</h2>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <p class="modal-subtitle">Showing approximate BPE tokenization for your latest prompt.</p>
+            <div id="token-visualizer-box" class="token-visualizer-box">
+                <!-- Color-coded tokens will appear here -->
+            </div>
+            <div class="token-stats-footer">
+                Total tokens: <strong id="modal-token-count">0</strong>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
