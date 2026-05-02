@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ragnar AI</title>
+    <title>Levi AI</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
@@ -25,7 +25,7 @@
             </div>
             
             <div class="history-section">
-                <p class="history-title sidebar-text">Recent</p>
+                <p class="history-title sidebar-text">Your Chats</p>
                 <div id="history-list" class="history-list"></div>
             </div>
         </aside>
@@ -38,7 +38,7 @@
                     <button id="sidebar-toggle" class="icon-btn" title="Toggle Menu">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
-                    <h2 class="app-title">Ragnar</h2>
+                    <h2 class="app-title">Levi</h2>
                     <div class="model-selector-wrapper">
                         <select id="model-select">
                             <option value="nvidia/nemotron-3-super-120b-a12b" selected>Nemotron 3 Super 120B</option>
@@ -55,7 +55,7 @@
                     <div class="token-tooltip">
                         <div class="tooltip-row"><span>Input:</span> <span id="input-tokens">0</span></div>
                         <div class="tooltip-row"><span>Output:</span> <span id="output-tokens">0</span></div>
-                        <div class="tooltip-row tooltip-total"><span>Cost:</span> <span id="session-cost">$0.00000</span></div>
+                        <div class="tooltip-row tooltip-total"><span>Cost(Approx):</span> <span id="session-cost">$0.00000</span></div>
                         <button id="tokenizer-btn" class="tokenizer-tool-link">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                             View Tokens
@@ -67,7 +67,7 @@
             <div id="chat-container" class="chat-container">
                 <div id="chat-messages" class="chat-messages">
                     <div class="welcome-screen" id="welcome-screen">
-                        <h1>Hello, I am Ragnar.</h1>
+                        <h1>Wassup? How can I help you today?</h1>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="footer-note">Ragnar may display inaccurate info, including about people, so double-check its responses.</div>
+                <div class="footer-note">AI may display inaccurate info, so double-check its responses.</div>
             </div>
         </main>
     </div>
