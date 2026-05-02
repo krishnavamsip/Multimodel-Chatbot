@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multimodal AI Chat</title>
+    <title>Gemini-Style AI Chat</title>
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -13,6 +13,9 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Dark overlay for mobile menu -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
         <!-- Sidebar -->
         <aside class="sidebar">
             <button id="new-chat-btn" class="new-chat-btn">
@@ -27,13 +30,20 @@
         <!-- Main Chat Area -->
         <main class="main-content">
             <header class="top-bar">
-                <div class="model-selector-wrapper">
-                    <select id="model-select">
-                        <option value="nvidia/nemotron-3-super-120b-a12b" selected>Nemotron 3 Super 120B</option>
-                        <option value="minimaxai/minimax-m2.7">Minimax M2.7</option>
-                        <option value="qwen/qwen3.5-397b-a17b">Qwen 3.5 397B</option>
-                        <option value="meta/llama3-8b-instruct">Llama 3 8B Instruct</option>
-                    </select>
+                <div class="top-bar-left">
+                    <!-- Hamburger Menu Button (Visible everywhere) -->
+                    <button id="menu-toggle-btn" class="menu-toggle-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    
+                    <div class="model-selector-wrapper">
+                        <select id="model-select">
+                            <option value="nvidia/nemotron-3-super-120b-a12b" selected>Nemotron 3 Super 120B</option>
+                            <option value="minimaxai/minimax-m2.7">Minimax M2.7</option>
+                            <option value="qwen/qwen3.5-397b-a17b">Qwen 3.5 397B</option>
+                            <option value="meta/llama3-8b-instruct">Llama 3 8B Instruct</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <!-- Hover Area for Tokens & Cost -->
@@ -42,7 +52,7 @@
                     <div class="token-tooltip">
                         <div class="tooltip-row"><span>Input:</span> <span id="input-tokens">0</span></div>
                         <div class="tooltip-row"><span>Output:</span> <span id="output-tokens">0</span></div>
-                        <div class="tooltip-row tooltip-total"><span>Cost(Approx):</span> <span id="session-cost">$0.00000</span></div>
+                        <div class="tooltip-row tooltip-total"><span>Cost:</span> <span id="session-cost">$0.00000</span></div>
                         
                         <!-- Internal Tokenizer Button -->
                         <button id="tokenizer-btn" class="tokenizer-tool-link">
@@ -56,14 +66,14 @@
             <div id="chat-container" class="chat-container">
                 <div id="chat-messages" class="chat-messages">
                     <div class="welcome-screen" id="welcome-screen">
-                        <h1>Hello, how's it going?</h1>
+                        <h1>Hello, how can I help you today?</h1>
                     </div>
                 </div>
             </div>
 
             <!-- Input Area -->
             <div class="input-container">
-                <!-- NEW: Timer Display -->
+                <!-- Timer Display -->
                 <div id="timer-container" class="timer-container">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     <span id="timer-text">00:00</span>
@@ -77,7 +87,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="footer-text">AI may display inaccurate info, so double-check its responses.</div>
+                <div class="footer-text">AI may display inaccurate info, including about people, so double-check its responses.</div>
             </div>
         </main>
     </div>
@@ -89,7 +99,7 @@
                 <h2>Token Breakdown</h2>
                 <button id="close-modal-btn" class="close-btn">&times;</button>
             </div>
-            <p class="modal-subtitle">Showing approximate tokenization for your latest prompt.</p>
+            <p class="modal-subtitle">Showing approximate BPE tokenization for your latest prompt.</p>
             <div id="token-visualizer-box" class="token-visualizer-box">
                 <!-- Color-coded tokens will appear here -->
             </div>

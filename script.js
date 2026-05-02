@@ -1,4 +1,4 @@
-const API_URL = 'https://my-chat-backend-np0r.onrender.com/api/chat';
+const API_URL = '[https://my-chat-backend-np0r.onrender.com/api/chat](https://my-chat-backend-np0r.onrender.com/api/chat)';
 
 const MODEL_PRICING = {
     "minimaxai/minimax-m2.7": { input: 1.00, output: 1.00 },
@@ -33,7 +33,7 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 const visualizerBox = document.getElementById('token-visualizer-box');
 const modalTokenCount = document.getElementById('modal-token-count');
 
-// NEW: Timer Elements
+// Timer Elements
 let timerInterval = null;
 let startTime = 0;
 const timerContainer = document.getElementById('timer-container');
@@ -141,12 +141,12 @@ function toggleSendButton(generating) {
         sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
         sendBtn.classList.add('stop-state');
     } else {
-        sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z" fill="currentColor"/></svg>`;
+        sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z" fill="currentColor"/></svg>`;
         sendBtn.classList.remove('stop-state');
     }
 }
 
-// NEW: Timer Functions
+// Timer Functions
 function startTimer() {
     startTime = Date.now();
     timerContainer.classList.add('active');
@@ -162,7 +162,6 @@ function startTimer() {
 
 function stopTimer() {
     clearInterval(timerInterval);
-    // Leave the final time visible for 3 seconds before hiding it
     setTimeout(() => {
         timerContainer.classList.remove('active');
     }, 3000);
@@ -290,7 +289,6 @@ async function processPrompt(message) {
     currentAbortController = new AbortController();
     const signal = currentAbortController.signal;
 
-    // Trigger the stopwatch
     startTimer();
 
     try {
@@ -410,9 +408,7 @@ async function processPrompt(message) {
             finalAnswerDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
         }
     } finally {
-        // Stop the stopwatch
         stopTimer();
-
         contentDiv.classList.remove('streaming-cursor');
         toggleSendButton(false);
         userInput.disabled = false;
@@ -470,7 +466,6 @@ function updateTokenDisplay() {
 }
 
 // --- TOKENIZER VISUALIZATION LOGIC ---
-
 function approximateTokens(text) {
     const regex = / ?[A-Za-z]+| ?[0-9]+| ?[^A-Za-z0-9\s]+|\s+(?!\S)|\s+/g;
     const matches = text.match(regex) || [];
@@ -524,6 +519,38 @@ userInput.addEventListener('input', function() {
     this.style.height = 'auto';
     this.style.height = (this.scrollHeight < 200 ? this.scrollHeight : 200) + 'px';
 });
+
+// --- UNIVERSAL SIDEBAR LOGIC ---
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebar = document.querySelector('.sidebar');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+if (sidebarToggle && sidebar && sidebarOverlay) {
+    // Toggle sidebar
+    sidebarToggle.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('active');
+        } else {
+            // Desktop toggle
+            sidebar.classList.toggle('collapsed');
+        }
+    });
+
+    // Close sidebar on mobile overlay click
+    sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+    });
+
+    // Auto-close sidebar on mobile when picking a chat
+    document.querySelector('.sidebar').addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && (e.target.closest('.history-item') || e.target.closest('.new-chat-btn'))) {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+        }
+    });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     init();

@@ -36,6 +36,18 @@ body {
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--border-color);
+    transition: width 0.3s ease, padding 0.3s ease;
+    overflow-x: hidden;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Desktop Collapsed State */
+.sidebar.collapsed {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-right: none;
 }
 
 .main-content {
@@ -43,6 +55,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    min-width: 0; /* Prevents overflow issues */
 }
 
 /* --- Sidebar Items --- */
@@ -113,13 +126,36 @@ body {
 .history-item:hover .delete-btn { opacity: 1; }
 .delete-btn:hover { color: #ff6b6b; }
 
-/* --- Main Header --- */
+/* --- Main Header & Toggle --- */
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
     flex-shrink: 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sidebar-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+}
+.sidebar-toggle:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
 }
 
 select {
@@ -243,7 +279,6 @@ select option { background-color: var(--bg-sidebar); }
     color: white;
 }
 .message.assistant .message-content { padding: 10px 0; color: var(--text-primary); }
-
 .message.assistant .message-content p { margin-bottom: 16px; }
 .message.assistant .message-content ul, .message.assistant .message-content ol { margin-left: 20px; margin-bottom: 16px; }
 .message.assistant .message-content strong { font-weight: 600; color: white; }
@@ -426,7 +461,6 @@ select option { background-color: var(--bg-sidebar); }
     align-items: center;
     justify-content: center;
 }
-
 .modal-content {
     background-color: var(--bg-sidebar);
     border: 1px solid var(--border-color);
@@ -436,36 +470,11 @@ select option { background-color: var(--bg-sidebar); }
     max-width: 600px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.modal-header h2 {
-    font-size: 18px;
-    color: var(--text-primary);
-}
-
-.close-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 24px;
-    cursor: pointer;
-    line-height: 1;
-}
-
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.modal-header h2 { font-size: 18px; color: var(--text-primary); }
+.close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; line-height: 1; }
 .close-btn:hover { color: white; }
-
-.modal-subtitle {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-}
-
+.modal-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
 .token-visualizer-box {
     background-color: var(--bg-main);
     border: 1px solid var(--border-color);
@@ -479,25 +488,13 @@ select option { background-color: var(--bg-sidebar); }
     font-family: inherit;
     white-space: pre-wrap;
 }
-
-/* Colors for the alternating tokens */
-.token-chunk {
-    color: white;
-    padding: 2px 0;
-}
-
-.token-color-0 { background-color: rgba(139, 92, 246, 0.4); } /* Purple */
-.token-color-1 { background-color: rgba(16, 185, 129, 0.4); } /* Green */
-.token-color-2 { background-color: rgba(245, 158, 11, 0.4); } /* Orange */
-.token-color-3 { background-color: rgba(239, 68, 68, 0.4); }  /* Red */
-.token-color-4 { background-color: rgba(59, 130, 246, 0.4); } /* Blue */
-
-.token-stats-footer {
-    margin-top: 16px;
-    text-align: right;
-    font-size: 14px;
-    color: var(--text-secondary);
-}
+.token-chunk { color: white; padding: 2px 0; }
+.token-color-0 { background-color: rgba(139, 92, 246, 0.4); } 
+.token-color-1 { background-color: rgba(16, 185, 129, 0.4); } 
+.token-color-2 { background-color: rgba(245, 158, 11, 0.4); } 
+.token-color-3 { background-color: rgba(239, 68, 68, 0.4); }  
+.token-color-4 { background-color: rgba(59, 130, 246, 0.4); } 
+.token-stats-footer { margin-top: 16px; text-align: right; font-size: 14px; color: var(--text-secondary); }
 .token-stats-footer strong { color: var(--text-primary); }
 
 /* --- Timer Display --- */
@@ -512,6 +509,52 @@ select option { background-color: var(--bg-sidebar); }
     align-self: flex-start;
     margin-left: 20px;
 }
-.timer-container.active { 
-    display: flex; 
+.timer-container.active { display: flex; }
+
+/* --- Mobile Responsive Magic --- */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 998;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 999;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+        border-right: none;
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    .top-bar { padding: 12px; }
+    .chat-container { padding: 10px; }
+    .input-container { padding: 10px; }
+    
+    .message.user .message-content, 
+    .message.assistant .message-content {
+        font-size: 15px;
+    }
+    
+    select {
+        font-size: 16px;
+        max-width: 150px;
+        text-overflow: ellipsis;
+    }
+    
+    .timer-container { margin-left: 10px; }
 }
