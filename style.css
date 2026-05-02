@@ -499,3 +499,19 @@ select option { background-color: var(--bg-sidebar); }
     color: var(--text-secondary);
 }
 .token-stats-footer strong { color: var(--text-primary); }
+
+/* --- Timer Display --- */
+.timer-container {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-family: monospace;
+    align-self: flex-start;
+    margin-left: 20px;
+}
+.timer-container.active { 
+    display: flex; 
+}

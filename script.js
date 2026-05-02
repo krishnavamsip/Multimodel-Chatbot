@@ -33,6 +33,12 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 const visualizerBox = document.getElementById('token-visualizer-box');
 const modalTokenCount = document.getElementById('modal-token-count');
 
+// NEW: Timer Elements
+let timerInterval = null;
+let startTime = 0;
+const timerContainer = document.getElementById('timer-container');
+const timerText = document.getElementById('timer-text');
+
 marked.setOptions({
     highlight: function(code, lang) {
         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
@@ -138,6 +144,28 @@ function toggleSendButton(generating) {
         sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z" fill="currentColor"/></svg>`;
         sendBtn.classList.remove('stop-state');
     }
+}
+
+// NEW: Timer Functions
+function startTimer() {
+    startTime = Date.now();
+    timerContainer.classList.add('active');
+    timerText.textContent = "00:00";
+    
+    timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+        const s = String(elapsed % 60).padStart(2, '0');
+        timerText.textContent = `${m}:${s}`;
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    // Leave the final time visible for 3 seconds before hiding it
+    setTimeout(() => {
+        timerContainer.classList.remove('active');
+    }, 3000);
 }
 
 function enableEdit(messageDiv, content, historyIndex) {
@@ -262,10 +290,11 @@ async function processPrompt(message) {
     currentAbortController = new AbortController();
     const signal = currentAbortController.signal;
 
+    // Trigger the stopwatch
+    startTimer();
+
     try {
         const currentModel = modelSelect.value;
-        
-        // --- SECURE BACKEND FETCH ---
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -381,6 +410,9 @@ async function processPrompt(message) {
             finalAnswerDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
         }
     } finally {
+        // Stop the stopwatch
+        stopTimer();
+
         contentDiv.classList.remove('streaming-cursor');
         toggleSendButton(false);
         userInput.disabled = false;
