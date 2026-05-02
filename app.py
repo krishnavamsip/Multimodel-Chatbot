@@ -1,50 +1,66 @@
-from flask import Flask, request, Response, stream_with_context
+from flask import Flask, request, Response, jsonify
 from flask_cors import CORS
 import requests
 import os
-import json
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
+
+# Enable CORS for all routes so GitHub Pages can communicate with Render
 CORS(app)
 
-NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
+# The NVIDIA API endpoint
 NVIDIA_API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    frontend_data = request.json
-    
-    # Force the API to stream the response back to us
-    frontend_data['stream'] = True
-    
-    # This tells the API to send the token usage stats at the very end of the stream
-    if 'stream_options' not in frontend_data:
-        frontend_data['stream_options'] = {"include_usage": True}
+    # 1. Securely get the API key from Render's Environment Variables
+    api_key = os.environ.get("NVIDIA_API_KEY")
+    if not api_key:
+        return jsonify({"error": "Server configuration error: API Key missing."}), 500
+
+    # 2. Get the incoming prompt and history from your frontend
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid request payload"}), 400
+
+    # 3. Force streaming and usage stats on the backend side
+    data['stream'] = True
+    data['stream_options'] = {"include_usage": True}
 
     headers = {
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {NVIDIA_API_KEY}",
-        "Accept": "text/event-stream" 
+        "Accept": "text/event-stream"
     }
 
-    try:
-        # Request with stream=True
-        req = requests.post(NVIDIA_API_URL, headers=headers, json=frontend_data, stream=True)
-        
-        def generate():
-            # iter_lines() processes the stream instantly line-by-line
-            for line in req.iter_lines():
-                if line:
-                    yield line + b'\n\n'
+    # 4. Proxy the streaming response from NVIDIA back to your frontend
+    def generate():
+        try:
+            response = requests.post(
+                NVIDIA_API_URL,
+                headers=headers,
+                json=data,
+                stream=True
+            )
+            response.raise_for_status()
 
-        return Response(stream_with_context(generate()), content_type=req.headers.get('content-type', 'text/event-stream'))
-        
-    except Exception as e:
-        return Response(json.dumps({"error": str(e)}), status=500, mimetype='application/json')
+            # Pass each chunk of the stream exactly as it arrives
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    yield chunk
+                    
+        except requests.exceptions.RequestException as e:
+            # If NVIDIA throws an error, send it back gracefully
+            yield f"data: {{\"error\": \"{str(e)}\"}}\n\n".encode('utf-8')
+
+    return Response(generate(), mimetype='text/event-stream')
+
+# Health check route (Optional, but good for testing if Render is awake)
+@app.route('/', methods=['GET'])
+def home():
+    return "Ragnar Backend is Live and Running!", 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
+    # Use port 5000 or whatever port Render assigns
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

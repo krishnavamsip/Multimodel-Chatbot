@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini-Style AI Chat</title>
+    <title>Ragnar AI</title>
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -17,10 +17,23 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <!-- Hamburger Menu Button -->
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
             <button id="new-chat-btn" class="new-chat-btn">
-                <span>+</span> New chat
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <span class="sidebar-text">New chat</span>
             </button>
+            
             <div class="history-section">
                 <p class="history-title">Recent</p>
                 <div id="history-list" class="history-list"></div>
@@ -30,12 +43,8 @@
         <!-- Main Chat Area -->
         <main class="main-content">
             <header class="top-bar">
-                <div class="top-bar-left">
-                    <!-- Hamburger Menu Button (Visible everywhere) -->
-                    <button id="menu-toggle-btn" class="menu-toggle-btn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                    </button>
-                    
+                <div class="header-left">
+                    <h2 class="app-title">Ragnar</h2>
                     <div class="model-selector-wrapper">
                         <select id="model-select">
                             <option value="nvidia/nemotron-3-super-120b-a12b" selected>Nemotron 3 Super 120B</option>
@@ -53,8 +62,6 @@
                         <div class="tooltip-row"><span>Input:</span> <span id="input-tokens">0</span></div>
                         <div class="tooltip-row"><span>Output:</span> <span id="output-tokens">0</span></div>
                         <div class="tooltip-row tooltip-total"><span>Cost:</span> <span id="session-cost">$0.00000</span></div>
-                        
-                        <!-- Internal Tokenizer Button -->
                         <button id="tokenizer-btn" class="tokenizer-tool-link">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                             View Prompt Tokens
@@ -66,14 +73,13 @@
             <div id="chat-container" class="chat-container">
                 <div id="chat-messages" class="chat-messages">
                     <div class="welcome-screen" id="welcome-screen">
-                        <h1>Hello, how can I help you today?</h1>
+                        <h1>Hello, I am Ragnar.</h1>
                     </div>
                 </div>
             </div>
 
             <!-- Input Area -->
             <div class="input-container">
-                <!-- Timer Display -->
                 <div id="timer-container" class="timer-container">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     <span id="timer-text">00:00</span>
@@ -100,9 +106,7 @@
                 <button id="close-modal-btn" class="close-btn">&times;</button>
             </div>
             <p class="modal-subtitle">Showing approximate BPE tokenization for your latest prompt.</p>
-            <div id="token-visualizer-box" class="token-visualizer-box">
-                <!-- Color-coded tokens will appear here -->
-            </div>
+            <div id="token-visualizer-box" class="token-visualizer-box"></div>
             <div class="token-stats-footer">
                 Total tokens: <strong id="modal-token-count">0</strong>
             </div>

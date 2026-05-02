@@ -1,4 +1,4 @@
-const API_URL = '[https://my-chat-backend-np0r.onrender.com/api/chat](https://my-chat-backend-np0r.onrender.com/api/chat)';
+const API_URL = 'https://my-chat-backend-np0r.onrender.com/api/chat';
 
 const MODEL_PRICING = {
     "minimaxai/minimax-m2.7": { input: 1.00, output: 1.00 },
@@ -141,7 +141,7 @@ function toggleSendButton(generating) {
         sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
         sendBtn.classList.add('stop-state');
     } else {
-        sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z" fill="currentColor"/></svg>`;
+        sendBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z" fill="currentColor"/></svg>`;
         sendBtn.classList.remove('stop-state');
     }
 }
